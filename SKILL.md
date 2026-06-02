@@ -20,6 +20,8 @@ Use `assets/three-pane-prototype-template.html` as the style and structure refer
 
 Read `references/style-guide.md` when you need the exact layout, visual, annotation, and interaction conventions.
 
+For UGREEN e-ink frame / 墨水屏相框 App work, read `references/eink-frame-app-baseline.md` and use `assets/eink-frame-app-prototype.html` as the baseline prototype before making changes. This applies to requests about 墨水屏、相框 App、送礼模式、照片墙、相册发送、照片编辑、设备配网、设备日志, or related e-ink frame flows.
+
 ## Workflow
 
 1. Read the PRD and identify modules, pages, states, and critical paths.
