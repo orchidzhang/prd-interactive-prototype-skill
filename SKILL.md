@@ -1,6 +1,7 @@
 ---
 name: prd-interactive-prototype
 description: Create or update interactive HTML prototypes from PRDs, product requirements, feature flows, or user-requested prototype changes. Use when Codex should turn requirements into either a detailed review prototype with a left page tree, center app/desktop simulator, and right requirements annotation panel, or a cleaner demo prototype with only navigation and the simulated product experience. Also use when converting between demo and detailed review versions.
+
 ---
 
 # PRD Interactive Prototype
@@ -20,6 +21,26 @@ If the user asks for "原型" without specifying a mode, ask whether they want d
 - "给开发 / 测试 / 评审 / 需求走查" means detailed review mode.
 - "给老板 / 客户 / 演示 / demo / 展示" means demo mode.
 - "两个版本都要" means both modes.
+
+## Collaboration Delivery Context
+
+Default collaboration context is DingTalk / 钉钉. Feishu / 飞书 is optional and usually for the user's personal organization unless the user explicitly says the artifact is for Feishu.
+
+When preparing a prototype for sharing:
+
+- DingTalk delivery: provide a concise sharing note the user can paste into a DingTalk group, including file name, review goal, key path to click, and what decisions or feedback are needed.
+- Feishu personal organization: only generate Feishu-oriented Markdown notes when the user asks for Feishu, docs, personal archive, or a copy-paste summary.
+- Local handoff: when no platform is specified, prioritize a clean single HTML file plus a short plain-language summary.
+- Do not hard-code platform-specific UI or file behavior unless the user explicitly requests it.
+
+Useful DingTalk sharing note shape:
+
+```md
+已更新原型：{file_name}
+建议查看路径：{critical_path}
+本版重点：{3-5 concise bullets}
+需要确认：{open_questions_or_decisions}
+```
 
 ## Core Output
 
@@ -50,24 +71,60 @@ For UGREEN e-ink frame / 墨水屏相框 App work, read `references/eink-frame-a
 
 1. Read the PRD and identify modules, pages, states, and critical paths.
 2. Determine the output mode: detailed review, demo, or both.
-3. Build a page tree before building screens.
-4. Decide which states deserve separate nav items:
+3. Determine scope type: full product, demo / exhibition version, partial feature, or patch to an existing prototype.
+4. Build a page tree before building screens.
+5. Decide which states deserve separate nav items:
    - Default state.
    - Empty state.
    - Error / offline state.
    - Permission or conflict state.
    - Confirmation / result states.
-5. Implement each HTML output as a single file unless the user asks otherwise.
-6. Keep the prototype practical and reviewable:
+6. Implement each HTML output as a single file unless the user asks otherwise.
+7. Keep the prototype practical and reviewable:
    - Use gray wireframe styling unless the PRD or user asks for visual polish.
    - Show real product copy, not placeholder lorem ipsum.
    - In detailed review mode, put annotations in the right panel, not inside the app screen.
    - In detailed review mode, include P0 / P1 / P2 priority tags in annotations when available.
    - In demo mode, optimize for a clean walkthrough and keep requirements details out of the visible UI.
-7. Validate before final response:
+8. Validate before final response:
    - Run a syntax check for embedded JavaScript.
    - Open through a local static server when feasible.
    - Verify the target page, interaction, and annotation changed as requested.
+
+## Demo Scope Discipline
+
+For demo, exhibition, sales walkthrough, executive review, or customer-facing prototypes, narrow the surface to what the demo actually needs.
+
+- Do not make a demo prototype more complete than the PRD scope. Extra product-complete paths can confuse reviewers.
+- Remove or hide non-demo paths such as onboarding, device binding, advanced settings, retry tooling, debug status, or future roadmap modules unless the PRD says they are part of the demo.
+- Keep only the states needed to explain the story: entry, selection, preview/edit, send/progress, success/result, and key exception states.
+- If the PRD says a capability is not supported, show that through absence of the entry or a simple disabled/Toast state, not through a full unsupported flow.
+- Use demo copy that sounds like the real product UI, not implementation commentary.
+- Preserve deleted/hidden detailed requirements in metadata or annotations only when useful for future reconstruction.
+
+## Existing Prototype Patch Checklist
+
+When modifying an existing prototype, complete this checklist before final delivery:
+
+- Page tree: remove, rename, or add nav items so the left navigation matches the current scope.
+- Visible entry points: update buttons, tabs, menus, headers, cards, and bottom bars so removed pages are no longer reachable.
+- Render routing: ensure hidden or removed pages cannot still be opened by stale route conditions.
+- State overrides: update nav state, default state, selected tabs, selected devices, empty/error flags, and demo status flags.
+- Screen copy: remove stale labels from visible UI, especially old mode names, unsupported features, and outdated platform names.
+- Annotation or metadata: in detailed review mode update the right panel; in demo mode update hidden structured metadata if present.
+- Interaction integrity: check buttons do not nest, disabled states behave as intended, and Toasts reflect the current scope.
+- Validation: run embedded JavaScript syntax check and, when feasible, open the file through a static server.
+
+## Scope Difference Summary
+
+When the PRD changes an existing prototype or the output is a demo version, include a concise summary in the final response or sharing note:
+
+- Supported in this version.
+- Removed or intentionally hidden.
+- Changed from previous prototype.
+- Open questions or pending decisions, if any.
+
+For detailed review mode, this summary may also live in the right annotation panel. For demo mode, keep it out of the visible product UI.
 
 ## Mode Conversion
 
@@ -99,6 +156,8 @@ When updating an existing prototype:
 - In detailed review mode, update both the visible screen and the right-side annotation when behavior changes.
 - In demo mode, update the visible flow and the hidden structured metadata when behavior changes.
 - Keep backups before overwriting user-owned desktop files when practical.
+- If the user says a page or feature should be "删掉 / 去掉", remove visible entry points and route access; keeping unused helper functions is acceptable when removing them would cause unnecessary churn.
+- If the user later restores a removed feature, restore only the needed visible scope first, not the entire old page set.
 
 ## Annotation Rules
 
@@ -138,3 +197,18 @@ If the user is working on a project folder, place output under that project, pre
 `项目名/原型/`
 
 If the source HTML is outside the writable workspace, create or update a working copy in the workspace first. Only write back to the original path after approval, and keep a backup for substantial changes.
+
+## File Naming and Handoff
+
+Use clear, shareable names. Prefer project + purpose + date when creating a new artifact:
+
+`{项目名}{版本/场景}需求原型-{MMDD}.html`
+
+For iterative edits to an artifact the user is already sharing, preserve the existing output file name unless the user asks for a new versioned copy.
+
+When delivering, mention:
+
+- The workspace file path.
+- The desktop or handoff file path, if created.
+- Whether the original source was backed up or left untouched.
+- Validation performed.
