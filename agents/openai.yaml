@@ -1,6 +1,6 @@
 interface:
   display_name: "PRD Interactive Prototype"
-  short_description: "Create annotated clickable PRD prototypes."
-  default_prompt: "Use $prd-interactive-prototype to create a three-pane interactive HTML prototype with requirement annotations from this PRD."
+  short_description: "Create PRD review or demo HTML prototypes."
+  default_prompt: "Use $prd-interactive-prototype to create a PRD-based interactive HTML prototype in detailed review or demo mode."
 policy:
   allow_implicit_invocation: true
